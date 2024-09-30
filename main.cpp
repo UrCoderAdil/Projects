@@ -1,249 +1,233 @@
-/*#include <iostream>
-class Student{
-public:
-    std::string name;
-    std::string section;
-    std::string school;
-    std::string cms_id;
-    Student(std::string name,std::string section,std::string school,std::string cms_id){
-        this->name=name;
-        this->section=section;
-        this->school=school;
-        this->cms_id=cms_id;
-           };
-};
-void startUp();
-void Registeration();
-using namespace std;
-
-int main()
-{
-    cout << "_________________________Welcome Students!!___________________________" << endl;
-     startUp();
-    return 0;
-}
-void startUp(){
-    char choice;
-    cout<<"Do you want to login or register?"<<endl;
-    cout<<"press 'r' for registration\npress 'l' for login \nEnter your choice here: ";
-    cin>>choice;
-    if(choice != 'r' && choice != 'l'){
-          cout<<"Invalid Choice!!\n Try again!!\n";
-          startUp();
-    }
-    else{
-         if(choice == 'r'){
-             Registeration();
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    }
-}
-
-
-
-    void Registeration(){
-    std::string cms;
-    std::string school;
-    std::string name;
-    std::string section;
-    std::string registerationno;
-    cout<<"\n\nWelcome to Student Registration form!!\n";
-    cout<<"Please Enter your cms_id here :";
-    cin>>cms;
-    cout<<"\nPlease Enter your school here :";
-    cin>>school;
-    registerationno="stud24"+school+"_"+ cms;
-    cin.ignore();
-    cout<<"\nPlease Enter your name here :";
-    getline(cin,name);
-    cout<<"\nPlease Enter your section here :";
-    cin>>section;
-    Student NewStudent(name,section,school,cms);
-    cout<<"\nYour successfully registered!!\n";
-    cout<<"Your Registration_no is : "<<registerationno;
-
-     }*/
 #include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
-#include <sstream>
-
-class Student {
-public:
-    std::string name;
-    std::string section;
-    std::string school;
-    int cms_id;
-    std::string registrationNo;
-
-    Student(std::string name, std::string section, std::string school, int cms_id, std::string registrationNo) {
-        this->name = name;
-        this->section = section;
-        this->school = school;
-        this->cms_id = cms_id;
-        this->registrationNo = registrationNo;
-    }
-
-    // Save student data to a file
-    void saveToFile() {
-        std::ofstream file("students.txt", std::ios::app);  // Open file in append mode
-        if (file.is_open()) {
-            file << name << "," << section << "," << school << "," << cms_id << "," << registrationNo << "\n";
-            file.close();
-        }
-    }
-};
-
-// Function declarations
-void startUp();
-void Register();
-void Login();
-bool loadStudentData(const std::string& cms_id, Student& student);
-
 using namespace std;
+
+// Function prototypes
+void length();
+void volume();
+void mass();
+void time();
+void temperature();
+void area();
 
 int main() {
-    cout << "_________________________Welcome Students!!___________________________" << endl;
+    char choose;
 
-    string input;
-    while (true) {
-        startUp();
-        cout << "\nType 'quit' to exit or press any other key to continue: ";
-        cin >> input;
-        if (input == "quit") {
-            break;
+    cout << "_________________ Welcome to Unit Converter _________________________\n";
+
+    do {
+        cout << "\nWhat unit do you want to convert?\n";
+        cout << "For Length press '0'\n";
+        cout << "For Area press '1'\n";
+        cout << "For Temperature press '2'\n";
+        cout << "For Volume press '3'\n";
+        cout << "For Time press '4'\n";
+        cout << "For Mass/Weight press '5'\n";
+        cout << "To Quit press 'q'\n";
+        cout << "Enter your choice here: ";
+        cin >> choose;
+
+        switch (choose) {
+            case '0': length(); break;
+            case '1': area(); break;
+            case '2': temperature(); break;
+            case '3': volume(); break;
+            case '4': time(); break;
+            case '5': mass(); break;
+            case 'q':
+            case 'Q': cout << "Exiting the program. Goodbye!\n"; break;
+            default: cout << "Invalid choice! Please try again.\n"; break;
         }
-    }
+    } while (choose != 'q' && choose != 'Q');
 
     return 0;
 }
 
-void startUp() {
+void length() {
+    double val;
     char choice;
-    cout << "\nDo you want to login or register?" << endl;
-    cout << "Press 'r' for registration\nPress 'l' for login\nEnter your choice here: ";
+
+    cout << "\n--- Length Conversion ---\n";
+    cout << "For Inches to Centimeters Enter '0'\n";
+    cout << "For Feet to Meters Enter '1'\n";
+    cout << "For Miles to Kilometers Enter '2'\n";
+    cout << "For Centimeters to Inches Enter '3'\n";
+    cout << "Enter your choice here: ";
     cin >> choice;
 
-    if (choice == 'r') {
-        Register();
-    }
-    else if (choice == 'l') {
-        Login();
-    }
-    else {
-        cout << "Invalid choice! Please try again." << endl;
-    }
-}
+    cout << "Enter the value to convert: ";
+    cin >> val;
 
-void Register() {
-    std::string cms;
-    std::string school;
-    std::string name;
-    std::string section;
-    std::string registrationNo;
-
-    cout << "\n\nWelcome to Student Registration form!!\n";
-    cout << "Please Enter your cms_id here: ";
-    cin >> cms;
-
-    // Check if the cms_id already exists
-    Student existingStudent("", "", "", 0, "");
-    if (loadStudentData(cms, existingStudent)) {
-        cout << "\nThis CMS ID is already registered. You cannot register again with the same ID.\n";
-        return;  // Exit registration process if the cms_id exists
-    }
-
-    cout << "\nPlease Enter your school here: ";
-    cin >> school;
-
-    // Concatenate to create the registration number
-    registrationNo = "stud24" + school + "_" + cms;
-
-    // Fixing issue with getline and cin
-    cin.ignore();  // Ignore the leftover newline character from cin
-
-    cout << "\nPlease Enter your name here: ";
-    getline(cin, name);
-
-    cout << "\nPlease Enter your section here: ";
-    cin >> section;
-
-    // Assuming cms_id should be an integer, convert cms to int
-    int cms_id = stoi(cms);
-
-    // Create Student object and save it to the file
-    Student newStudent(name, section, school, cms_id, registrationNo);
-    newStudent.saveToFile();
-
-    cout << "\nYou're successfully registered!!\n";
-    cout << "Your Registration_no is: " << registrationNo << endl;
-}
-
-void Login() {
-    string cms;
-    cout << "\n\nWelcome to Student Login form!!\n";
-    cout << "Please Enter your cms_id here: ";
-    cin >> cms;
-
-    Student loggedInStudent("", "", "", 0, "");
-
-    if (loadStudentData(cms, loggedInStudent)) {
-        // Display student details after successful login
-        cout << "\nLogin successful! Here are your details:\n";
-        cout << "Name: " << loggedInStudent.name << "\n";
-        cout << "Section: " << loggedInStudent.section << "\n";
-        cout << "School: " << loggedInStudent.school << "\n";
-        cout << "Registration No: " << loggedInStudent.registrationNo << "\n";
-    } else {
-        cout << "No student found with CMS ID: " << cms << "\n";
+    switch (choice) {
+        case '0':
+            cout << "Value " << val << " converted to " << val * 2.54 << " cm\n";
+            break;
+        case '1':
+            cout << "Value " << val << " converted to " << val * 0.3048 << " m\n";
+            break;
+        case '2':
+            cout << "Value " << val << " converted to " << val * 1.60934 << " km\n";
+            break;
+        case '3':
+            cout << "Value " << val << " converted to " << val / 2.54 << " inches\n";
+            break;
+        default:
+            cout << "Invalid choice!\n";
+            break;
     }
 }
 
-// Load student data from the file
-bool loadStudentData(const std::string& cms_id, Student& student) {
-    std::ifstream file("students.txt");
-    if (!file.is_open()) {
-        cout << "Error opening student data file!" << endl;
-        return false;
+void volume() {
+    double val;
+    char choice;
+
+    cout << "\n--- Volume Conversion ---\n";
+    cout << "For Gallons to Liters Enter '0'\n";
+    cout << "For Cubic Feet to Cubic Meters Enter '1'\n";
+    cout << "For Pints to Milliliters Enter '2'\n";
+    cout << "Enter your choice here: ";
+    cin >> choice;
+
+    cout << "Enter the value to convert: ";
+    cin >> val;
+
+    switch (choice) {
+        case '0':
+            cout << "Value " << val << " converted to " << val * 3.78541 << " L\n";
+            break;
+        case '1':
+            cout << "Value " << val << " converted to " << val * 0.0283168 << " m³\n";
+            break;
+        case '2':
+            cout << "Value " << val << " converted to " << val * 473.176 << " mL\n";
+            break;
+        default:
+            cout << "Invalid choice!\n";
+            break;
     }
-
-    std::string line;
-    while (getline(file, line)) {
-        std::stringstream ss(line);
-        std::string name, section, school, cms_str, registrationNo;
-        getline(ss, name, ',');
-        getline(ss, section, ',');
-        getline(ss, school, ',');
-        getline(ss, cms_str, ',');
-        getline(ss, registrationNo, ',');
-
-        if (cms_str == cms_id) {
-            student.name = name;
-            student.section = section;
-            student.school = school;
-            student.cms_id = stoi(cms_str);
-            student.registrationNo = registrationNo;
-            return true;
-        }
-    }
-
-    return false;
 }
 
+void mass() {
+    double val;
+    char choice;
+
+    cout << "\n--- Mass Conversion ---\n";
+    cout << "For Pounds to Kilograms Enter '0'\n";
+    cout << "For Ounces to Grams Enter '1'\n";
+    cout << "For Tons to Metric Tons Enter '2'\n";
+    cout << "Enter your choice here: ";
+    cin >> choice;
+
+    cout << "Enter the value to convert: ";
+    cin >> val;
+
+    switch (choice) {
+        case '0':
+            cout << "Value " << val << " converted to " << val * 0.453592 << " kg\n";
+            break;
+        case '1':
+            cout << "Value " << val << " converted to " << val * 28.3495 << " g\n";
+            break;
+        case '2':
+            cout << "Value " << val << " converted to " << val * 0.907185 << " metric tons\n";
+            break;
+        default:
+            cout << "Invalid choice!\n";
+            break;
+    }
+}
+
+void time() {
+    double val;
+    char choice;
+
+    cout << "\n--- Time Conversion ---\n";
+    cout << "For Seconds to Minutes Enter '0'\n";
+    cout << "For Minutes to Hours Enter '1'\n";
+    cout << "For Hours to Seconds Enter '2'\n";
+    cout << "Enter your choice here: ";
+    cin >> choice;
+
+    cout << "Enter the value to convert: ";
+    cin >> val;
+
+    switch (choice) {
+        case '0':
+            cout << "Value " << val << " converted to " << val / 60 << " min\n";
+            break;
+        case '1':
+            cout << "Value " << val << " converted to " << val / 60 << " h\n";
+            break;
+        case '2':
+            cout << "Value " << val << " converted to " << val * 3600 << " s\n";
+            break;
+        default:
+            cout << "Invalid choice!\n";
+            break;
+    }
+}
+
+void temperature() {
+    double val;
+    char choice;
+
+    cout << "\n--- Temperature Conversion ---\n";
+    cout << "For Celsius to Fahrenheit Enter '0'\n";
+    cout << "For Fahrenheit to Celsius Enter '1'\n";
+    cout << "For Celsius to Kelvin Enter '2'\n";
+    cout << "For Kelvin to Celsius Enter '3'\n";
+    cout << "Enter your choice here: ";
+    cin >> choice;
+
+    cout << "Enter the value to convert: ";
+    cin >> val;
+
+    switch (choice) {
+        case '0':
+            cout << "Value " << val << " converted to " << (val * 9 / 5) + 32 << " F\n";
+            break;
+        case '1':
+            cout << "Value " << val << " converted to " << (val - 32) * 5 / 9 << " C\n";
+            break;
+        case '2':
+            cout << "Value " << val << " converted to " << val + 273.15 << " K\n";
+            break;
+        case '3':
+            cout << "Value " << val << " converted to " << val - 273.15 << " C\n";
+            break;
+        default:
+            cout << "Invalid choice!\n";
+            break;
+    }
+}
+
+void area() {
+    double val;
+    char choice;
+
+    cout << "\n--- Area Conversion ---\n";
+    cout << "For Square Feet to Square Meters Enter '0'\n";
+    cout << "For Acres to Hectares Enter '1'\n";
+    cout << "For Square Miles to Square Kilometers Enter '2'\n";
+    cout << "Enter your choice here: ";
+    cin >> choice;
+
+    cout << "Enter the value to convert: ";
+    cin >> val;
+
+    switch (choice) {
+        case '0':
+            cout << "Value " << val << " converted to " << val * 0.092903 << " m²\n";
+            break;
+        case '1':
+            cout << "Value " << val << " converted to " << val * 0.404686 << " ha\n";
+            break;
+        case '2':
+            cout << "Value " << val << " converted to " << val * 2.58999 << " km²\n";
+            break;
+        default:
+            cout << "Invalid choice!\n";
+            break;
+    }
+}
 
 
